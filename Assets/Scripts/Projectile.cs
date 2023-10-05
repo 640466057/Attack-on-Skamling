@@ -21,9 +21,9 @@ public class Bullet : MonoBehaviour
         rotation = Mathf.Atan2(tempRot.y, tempRot.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, 0, rotation);
         Vector3 direction = mousePos - transform.position;
-        rb.velocity = new Vector2(direction.x, direction.y).normalized;
+        rb.velocity = new Vector2(direction.x, direction.y).normalized * speed;
         
-        Destroy(gameObject, 60);
+        Destroy(gameObject, 10);
     }
 
     void Update()
