@@ -5,10 +5,22 @@ using UnityEngine.AI;
 
 public class ZombieAI : MonoBehaviour
 {
+    [Header("References")]
     [SerializeField]
     private Transform target;
-    public float speed;
 
+    [Header("Parameteres")]
+    [SerializeField]
+    public float health;
+    [SerializeField]
+    private float attackDamage;
+    [SerializeField]
+    private float attackSpeed;
+    //public float speed;
+
+    [Header("Info")]
+    [SerializeField]
+    private float attackCooldown;
     NavMeshAgent agent;
     
     // Start is called before the first frame update
@@ -23,7 +35,28 @@ public class ZombieAI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (health > 0)
+        {
+            agent.SetDestination(target.position);
+        } else
+        {
+            agent.SetDestination(transform.position);
+            Destroy(gameObject, 2.5f);
+        }
+        
+        attackCooldown -= Time.deltaTime;
         //transform.position = Vector2.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
-        agent.SetDestination(target.position);
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.TryGetComponent(out Tag tag) && tag.tags.Contains(Tag.Tags.Player))
+        {
+            if (attackCooldown <= 0)
+            {
+                collision.gameObject.GetComponent<PlayerController>().health -= attackDamage;
+                attackCooldown = 60 / attackSpeed;
+            }
+        }
     }
 }

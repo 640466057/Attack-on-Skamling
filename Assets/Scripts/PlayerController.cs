@@ -19,7 +19,9 @@ public class PlayerController : MonoBehaviour
     [Header("Parameteres")]
     public float moveSpeed;
     [SerializeField]
-    float Health;
+    public float health;
+    [SerializeField]
+    public int ammunition;
     
     [Header("Info")]
     [SerializeField]
@@ -34,17 +36,24 @@ public class PlayerController : MonoBehaviour
     {
         mousePos = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>().ScreenToWorldPoint(Input.mousePosition);
 
-        if (Input.GetMouseButtonDown(0))
+        if (health > 0)
         {
-            Vector3 projectilePos = new Vector3(transform.position.x + projectilePlayerOffset.x, transform.position.y + projectilePlayerOffset.y, transform.position.z + projectilePlayerOffset.z);
-            Instantiate(projectile, projectilePos, transform.rotation);
+            if (Input.GetMouseButtonDown(0) && ammunition > 0)
+            {
+                Vector3 projectilePos = new Vector3(transform.position.x + projectilePlayerOffset.x, transform.position.y + projectilePlayerOffset.y, transform.position.z + projectilePlayerOffset.z);
+                Instantiate(projectile, projectilePos, transform.rotation);
+                ammunition--;
+            }
+
+            moveInput.x = Input.GetAxisRaw("Horizontal");
+            moveInput.y = Input.GetAxisRaw("Vertical");
+
+            moveInput.Normalize();
+
+            rb2d.velocity = moveInput * moveSpeed;
+        } else
+        {
+            //Debug.Log("_Game Over_");
         }
-        
-        moveInput.x = Input.GetAxisRaw("Horizontal");
-        moveInput.y = Input.GetAxisRaw("Vertical");
-
-        moveInput.Normalize();
-
-        rb2d.velocity = moveInput * moveSpeed;
     }
 }

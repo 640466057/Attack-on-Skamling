@@ -10,6 +10,7 @@ public class Tag : MonoBehaviour
     {
         Projectile,
         Loot,
-        Ball
+        Ball,
+        Player
     }
 }
