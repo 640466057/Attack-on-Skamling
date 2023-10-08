@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -64,10 +65,10 @@ public class Bullet : MonoBehaviour
                     acceleration = 0;
                 }
             }
-            transform.GetChild(0).transform.position = new Vector2(transform.position.x, transform.position.y + 2.25f * (hight - 0.5f) - 0.25f);
         }
-        
-        RaycastHit2D hit = Physics2D.CircleCast(transform.position, 0.24f, rb.velocity.normalized, rb.velocity.magnitude * Time.deltaTime);
+        transform.GetChild(0).transform.position = new Vector2(transform.position.x, transform.position.y + 2.25f * (hight - 0.5f));
+
+        RaycastHit2D hit = Physics2D.CircleCast(transform.position, 0.25f, rb.velocity.normalized, rb.velocity.magnitude * Time.deltaTime);
         if (hit == true) {
             if (!hit.collider.gameObject.CompareTag("Player") && !hit.collider.gameObject.CompareTag("Ball"))
             {
@@ -88,7 +89,7 @@ public class Bullet : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.gameObject.TryGetComponent(out Tag tag) && tag.tags.Contains(Tag.Tags.Player) && Mathf.Abs(rb.velocity.x) <= 0)
         {

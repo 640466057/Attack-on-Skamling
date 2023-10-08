@@ -54,7 +54,7 @@ public class ZombieAI : MonoBehaviour
         {
             if (attackCooldown <= 0)
             {
-                collision.gameObject.GetComponent<PlayerController>().health -= attackDamage;
+                collision.gameObject.GetComponent<PlayerController>().TakeDamage(attackDamage);
                 attackCooldown = 60 / attackSpeed;
             }
         }

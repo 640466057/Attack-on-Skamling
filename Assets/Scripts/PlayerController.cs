@@ -4,6 +4,10 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UIElements;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using UnityEditor.Timeline.Actions;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
@@ -15,21 +19,25 @@ public class PlayerController : MonoBehaviour
     private GameObject projectile;
     [SerializeField]
     private Vector3 projectilePlayerOffset;
+    public UnityEngine.UI.Image healthBar;
+    [SerializeField]
+    private TMP_Text ballCounter;
 
     [Header("Parameteres")]
     public float moveSpeed;
-    [SerializeField]
     public float health;
-    [SerializeField]
+    public float maxHealth;
     public int ammunition;
     
     [Header("Info")]
     [SerializeField]
     Vector3 mousePos;
+    [SerializeField]
+    float timeSinceDamageTaken;
 
     void Start()
     {
-        
+        health = maxHealth;
     }
 
     void Update()
@@ -53,7 +61,29 @@ public class PlayerController : MonoBehaviour
             rb2d.velocity = moveInput * moveSpeed;
         } else
         {
-            //Debug.Log("_Game Over_");
+            SceneManager.LoadScene("Game Over");
         }
+        timeSinceDamageTaken += Time.deltaTime;
+        if (timeSinceDamageTaken > 5)
+        {
+            Heal(0.25f * Time.deltaTime);
+        }
+
+        ballCounter.text = ": " + ammunition;
+    }
+
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
+        healthBar.fillAmount = health / maxHealth;
+        timeSinceDamageTaken = 0;
+    }
+
+    public void Heal(float healingAmount)
+    {
+        health += healingAmount;
+        health = Mathf.Clamp(health, 0, maxHealth);
+        
+        healthBar.fillAmount = health / maxHealth;
     }
 }
