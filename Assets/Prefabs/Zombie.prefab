@@ -104,6 +104,7 @@ MonoBehaviour:
   health: 5
   attackDamage: 1
   attackSpeed: 60
+  followDistance: 12
   attackCooldown: 1
 --- !u!195 &-8564658306481476948
 NavMeshAgent:

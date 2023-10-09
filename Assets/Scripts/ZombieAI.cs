@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -16,6 +17,8 @@ public class ZombieAI : MonoBehaviour
     private float attackDamage;
     [SerializeField]
     private float attackSpeed;
+    [SerializeField]
+    private float followDistance;
     //public float speed;
 
     [Header("Info")]
@@ -37,7 +40,10 @@ public class ZombieAI : MonoBehaviour
     {
         if (health > 0)
         {
-            agent.SetDestination(target.position);
+            if (followDistance >= Vector3.Distance(target.position, transform.position))
+            {
+                agent.SetDestination(target.position);
+            }
         } else
         {
             agent.SetDestination(transform.position);
@@ -50,13 +56,10 @@ public class ZombieAI : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.gameObject.TryGetComponent(out Tag tag) && tag.tags.Contains(Tag.Tags.Player))
+        if (collision.gameObject.TryGetComponent(out Tag tag) && tag.tags.Contains(Tag.Tags.Player) && attackCooldown <= 0 && health > 0)
         {
-            if (attackCooldown <= 0)
-            {
-                collision.gameObject.GetComponent<PlayerController>().TakeDamage(attackDamage);
-                attackCooldown = 60 / attackSpeed;
-            }
+            collision.gameObject.GetComponent<PlayerController>().TakeDamage(attackDamage);
+            attackCooldown = 60 / attackSpeed;
         }
     }
 }
