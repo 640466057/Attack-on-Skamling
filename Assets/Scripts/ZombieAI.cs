@@ -58,8 +58,11 @@ public class ZombieAI : MonoBehaviour
     {
         if (collision.gameObject.TryGetComponent(out Tag tag) && tag.tags.Contains(Tag.Tags.Player) && attackCooldown <= 0 && health > 0)
         {
-            collision.gameObject.GetComponent<PlayerController>().TakeDamage(attackDamage);
-            attackCooldown = 60 / attackSpeed;
+            if (attackCooldown <= 0)
+            {
+                collision.gameObject.GetComponent<PlayerController>().health -= attackDamage;
+                attackCooldown = 60 / attackSpeed;
+            }
         }
     }
 }

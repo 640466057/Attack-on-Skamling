@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -67,11 +66,17 @@ public class Bullet : MonoBehaviour
                     acceleration = 0;
                 }
             }
+            transform.GetChild(0).transform.position = new Vector2(transform.position.x, transform.position.y + 2.25f * (hight - 0.5f) - 0.25f);
         }
+
         transform.GetChild(0).transform.position = new Vector2(transform.position.x, transform.position.y + 2.25f * (hight - 0.5f));
 
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, rb.velocity.normalized, rb.velocity.magnitude * Time.deltaTime, collisionLayer);
-        if (hit == true) {
+        //RaycastHit2D hit = Physics2D.Raycast(transform.position, rb.velocity.normalized, rb.velocity.magnitude * Time.deltaTime, collisionLayer);
+        RaycastHit2D hit = Physics2D.CircleCast(transform.position, 0.24f, rb.velocity.normalized, rb.velocity.magnitude * Time.deltaTime * 2, collisionLayer);
+        if (hit) {
+            Debug.Log(hit.normal + ", " + hit.transform.gameObject + ", " + hit.transform.gameObject.layer);
+            Debug.DrawLine(hit.point, hit.point +  hit.normal, Color.red, 5);
+           
             if (!hitSomthing)
             {
                 rb.velocity = Vector2.Reflect(rb.velocity, hit.normal);
@@ -79,12 +84,13 @@ public class Bullet : MonoBehaviour
                 {
                     hit.collider.gameObject.GetComponent<ZombieAI>().health--;
                 }
-                hitSomthing = true;
             }
-        }
-        else if (hitSomthing)
-        {
-            hitSomthing = false;
+            else if (hitSomthing)
+            {
+                Debug.Log("double hit");
+            }
+
+            hitSomthing = true;
         }
     }
 
