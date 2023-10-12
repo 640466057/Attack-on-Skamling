@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7006344998878754115}
   - component: {fileID: 5635020978108490012}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Renderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 4266007426907845002}
   - component: {fileID: 4109789029302170945}
   - component: {fileID: 5217886525788121415}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Ball
   m_TagString: Ball
   m_Icon: {fileID: 0}
@@ -135,6 +135,9 @@ MonoBehaviour:
   player: {fileID: 0}
   speed: 7.5
   playerBullet: 1
+  collisionLayer:
+    serializedVersion: 2
+    m_Bits: 1
   hight: 0
   acceleration: 0
   hitSomthing: 0

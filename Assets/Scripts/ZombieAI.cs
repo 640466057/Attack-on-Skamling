@@ -21,6 +21,8 @@ public class ZombieAI : MonoBehaviour
     [Header("Info")]
     [SerializeField]
     private float attackCooldown;
+    [SerializeField]
+    private float followDistance;
     NavMeshAgent agent;
     
     // Start is called before the first frame update
@@ -37,7 +39,10 @@ public class ZombieAI : MonoBehaviour
     {
         if (health > 0)
         {
-            agent.SetDestination(target.position);
+            if (followDistance >= Vector3.Distance(transform.position, target.position))
+            {
+                agent.SetDestination(target.position);
+            }
         } else
         {
             agent.SetDestination(transform.position);
@@ -50,7 +55,7 @@ public class ZombieAI : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.gameObject.TryGetComponent(out Tag tag) && tag.tags.Contains(Tag.Tags.Player))
+        if (collision.gameObject.TryGetComponent(out Tag tag) && tag.tags.Contains(Tag.Tags.Player) && health > 0)
         {
             if (attackCooldown <= 0)
             {

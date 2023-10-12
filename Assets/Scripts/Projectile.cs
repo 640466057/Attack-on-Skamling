@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
@@ -17,6 +16,7 @@ public class Bullet : MonoBehaviour
     public bool playerBullet;
     private float rotation;
     private Rigidbody2D rb;
+    public LayerMask collisionLayer;
 
     [Header("Info")]
     [SerializeField]
@@ -25,6 +25,7 @@ public class Bullet : MonoBehaviour
     private float acceleration;
     [SerializeField]
     private bool hitSomthing = false;
+    private bool shouldExist = true;
 
     void Start()
     {
@@ -68,19 +69,17 @@ public class Bullet : MonoBehaviour
         }
         transform.GetChild(0).transform.position = new Vector2(transform.position.x, transform.position.y + 2.25f * (hight - 0.5f));
 
-        RaycastHit2D hit = Physics2D.CircleCast(transform.position, 0.25f, rb.velocity.normalized, rb.velocity.magnitude * Time.deltaTime);
-        if (hit == true) {
-            if (!hit.collider.gameObject.CompareTag("Player") && !hit.collider.gameObject.CompareTag("Ball"))
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, rb.velocity.normalized, rb.velocity.magnitude * Time.deltaTime, collisionLayer);
+        if (hit == true && Mathf.Abs(rb.velocity.x) > 0)
+        {
+            if (!hitSomthing)
             {
-                if (!hitSomthing)
+                rb.velocity = Vector2.Reflect(rb.velocity, hit.normal);
+                if (hit.collider.gameObject.CompareTag("Enemy"))
                 {
-                    rb.velocity = Vector2.Reflect(rb.velocity, hit.normal);
-                    if (hit.collider.gameObject.CompareTag("Enemy"))
-                    {
-                        hit.collider.gameObject.GetComponent<ZombieAI>().health--;
-                    }
-                    hitSomthing = true;
+                    hit.collider.gameObject.GetComponent<ZombieAI>().health--;
                 }
+                hitSomthing = true;
             }
         }
         else if (hitSomthing)
@@ -91,9 +90,10 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.gameObject.TryGetComponent(out Tag tag) && tag.tags.Contains(Tag.Tags.Player) && Mathf.Abs(rb.velocity.x) <= 0)
+        if (collision.gameObject.TryGetComponent(out Tag tag) && tag.tags.Contains(Tag.Tags.Player) && Mathf.Abs(rb.velocity.x) <= 0 && shouldExist)
         {
             collision.gameObject.GetComponent<PlayerController>().ammunition++;
+            shouldExist = false;
             Destroy(gameObject);
         }
     }

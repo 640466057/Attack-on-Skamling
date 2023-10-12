@@ -100,11 +100,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23a910d9647aac24cbe66e7e765f0114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
+  target: {fileID: 8995038833623038361, guid: ecf67808ae6a4f84ab243c7072a42dd1, type: 3}
   health: 5
   attackDamage: 1
   attackSpeed: 60
   attackCooldown: 1
+  followDistance: 16
 --- !u!195 &-8564658306481476948
 NavMeshAgent:
   m_ObjectHideFlags: 0
